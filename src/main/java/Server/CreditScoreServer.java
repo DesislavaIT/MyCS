@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -5,8 +7,8 @@ import java.util.Arrays;
 
 public class CreditScoreServer {
 
-    //TODO: Uncomment when CLient entity is created
-//    public static int GetCreditScore(Client client)
+    //TODO: Uncomment when Client entity is created
+//   public static int CalculateCreditScore(Client client)
 //    {
 //        int intercept = 953;
 //        int Account_Type_s;
@@ -23,7 +25,7 @@ public class CreditScoreServer {
 //        int Time_with_Bank_s;
 //        int loan_to_income_s;
 //
-//        if (client.Account_Type.equals("VL"))
+//        if (client.getAccount_Type().equals("VL"))
 //        {
 //            Account_Type_s = -57;
 //        }
@@ -32,15 +34,15 @@ public class CreditScoreServer {
 //            Account_Type_s = 0;
 //        }
 //
-//        if (client.Bureau_Score < 850)
+//        if (client.getBureau_Score() < 850)
 //        {
 //            Bureau_Score_s = -48;
 //        }
-//        else if (client.Bureau_Score < 925)
+//        else if (client.getBureau_Score() < 925)
 //        {
 //            Bureau_Score_s = 0;
 //        }
-//        else if (client.Bureau_Score < 1000)
+//        else if (client.getBureau_Score() < 1000)
 //        {
 //            Bureau_Score_s = 90;
 //        }
@@ -49,7 +51,7 @@ public class CreditScoreServer {
 //            Bureau_Score_s = 109;
 //        }
 //
-//        if (client.Cheque_Card_Flag.equals("N"))
+//        if (client.getCheque_Card_Flag().equals("N"))
 //        {
 //            Cheque_Card_Flag_s = -48;
 //        }
@@ -58,7 +60,7 @@ public class CreditScoreServer {
 //            Cheque_Card_Flag_s = 0;
 //        }
 //
-//        if (client.Insurance_Required.equals("Y"))
+//        if (client.getInsurance_Required().equals("Y"))
 //        {
 //            Insurance_Required_s = -24;
 //        }
@@ -67,7 +69,7 @@ public class CreditScoreServer {
 //            Insurance_Required_s = 0;
 //        }
 //
-//        if (client.Loan_Payment_Method.equals("B"))
+//        if (client.getLoan_Payment_Method().equals("B"))
 //        {
 //            Loan_Payment_Method_s = 0;
 //        }
@@ -76,7 +78,7 @@ public class CreditScoreServer {
 //            Loan_Payment_Method_s = -36;
 //        }
 //
-//        if (client.Number_of_Payments < 18)
+//        if (client.getNumber_of_Payments() < 18)
 //        {
 //            Number_of_Payments_s = 102;
 //        }
@@ -85,7 +87,7 @@ public class CreditScoreServer {
 //            Number_of_Payments_s = 0;
 //        }
 //
-//        if (client.Residential_Status.equals("H"))
+//        if (client.getResidential_Status().equals("H"))
 //        {
 //            Residential_Status_s = 0;
 //        }
@@ -94,7 +96,7 @@ public class CreditScoreServer {
 //            Residential_Status_s = -18;
 //        }
 //
-//        if (client.SP_Number_Of_Searches_L6M < 6)
+//        if (client.getSP_Number_Of_Searches_L6M() < 6)
 //        {
 //            SP_Number_Of_Searches_L6M_s = 0;
 //        }
@@ -103,7 +105,7 @@ public class CreditScoreServer {
 //            SP_Number_Of_Searches_L6M_s = -42;
 //        }
 //
-//        if (client.SP_Number_of_CCJs == 0)
+//        if (client.getSP_Number_of_CCJs() == 0)
 //        {
 //            SP_Number_of_CCJs_s = 0;
 //        }
@@ -112,11 +114,11 @@ public class CreditScoreServer {
 //            SP_Number_of_CCJs_s = -42;
 //        }
 //
-//        if (client.Time_at_Address < 6)
+//        if (client.getTime_at_Address() < 6)
 //        {
 //            Time_at_Address_s = -21;
 //        }
-//        else if (client.Time_at_Address < 2500)
+//        else if (client.getTime_at_Address() < 2500)
 //        {
 //            Time_at_Address_s = 0;
 //        }
@@ -125,11 +127,11 @@ public class CreditScoreServer {
 //            Time_at_Address_s = 30;
 //        }
 //
-//        if (client.Time_in_Employment < 100)
+//        if (client.getTime_in_Employment() < 100)
 //        {
 //            Time_in_Employment_s = -24;
 //        }
-//        else if (client.Time_in_Employment < 1200)
+//        else if (client.getTime_in_Employment() < 1200)
 //        {
 //            Time_in_Employment_s = 0;
 //        }
@@ -138,15 +140,15 @@ public class CreditScoreServer {
 //            Time_in_Employment_s = 15;
 //        }
 //
-//        if (client.Time_with_Bank < 6)
+//        if (client.getTime_with_Bank() < 6)
 //        {
 //            Time_with_Bank_s = -33;
 //        }
-//        else if (client.Time_with_Bank < 200)
+//        else if (client.getTime_with_Bank() < 200)
 //        {
 //            Time_with_Bank_s = -12;
 //        }
-//        else if (client.Time_with_Bank < 1000)
+//        else if (client.getTime_with_Bank() < 1000)
 //        {
 //            Time_with_Bank_s = 0;
 //        }
@@ -155,27 +157,27 @@ public class CreditScoreServer {
 //            Time_with_Bank_s = 12;
 //        }
 //
-//        if (client.loan_to_income == -9999998 || client.loan_to_income == -9999997)
+//        if (client.getLoan_to_income() == -9999998 || client.getLoan_to_income() == -9999997)
 //        {
 //            loan_to_income_s = 0;
 //        }
-//        else if (client.loan_to_income < 5)
+//        else if (client.getLoan_to_income() < 5)
 //        {
 //            loan_to_income_s = 62;
 //        }
-//        else if (client.loan_to_income < 10)
+//        else if (client.getLoan_to_income() < 10)
 //        {
 //            loan_to_income_s = 21;
 //        }
-//        else if (client.loan_to_income < 30)
+//        else if (client.getLoan_to_income() < 30)
 //        {
 //            loan_to_income_s = 0;
 //        }
-//        else if (client.loan_to_income < 60)
+//        else if (client.getLoan_to_income() < 60)
 //        {
 //            loan_to_income_s = -15;
 //        }
-//        else if (client.loan_to_income < 100)
+//        else if (client.getLoan_to_income() < 100)
 //        {
 //            loan_to_income_s = -24;
 //        }
@@ -203,7 +205,7 @@ public class CreditScoreServer {
 //    }
 
     //Helper method
-    //TODO: Uncomment when CLient entity is created
+    //TODO: Uncomment when Client entity is created
 //    public static void PrintClients(Client[] clients)
 //    {
 //        for(int i = 0; i < Arrays.stream(clients).count(); i++)
@@ -212,7 +214,7 @@ public class CreditScoreServer {
 //        }
 //    }
 
-    //TODO: Uncomment when CLient entity is created
+    //TODO: Uncomment when Client entity is created
 //    public static void ReadCSV(String filePath)
 //    {
 //        String line = "";

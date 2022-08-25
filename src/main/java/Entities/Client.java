@@ -1,11 +1,11 @@
-package DTOs;
+package Entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ClientDTO {
+public class Client {
     private String Account_Type;
     private String Cheque_Card_Flag;
     private String Existing_Customer_Flag;
