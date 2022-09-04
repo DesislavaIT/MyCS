@@ -1,4 +1,4 @@
-package Entities;
+package com.mycs.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

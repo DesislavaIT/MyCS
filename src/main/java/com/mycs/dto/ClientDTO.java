@@ -1,4 +1,4 @@
-package DTOs;
+package com.mycs.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

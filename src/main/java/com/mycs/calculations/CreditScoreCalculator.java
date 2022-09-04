@@ -1,6 +1,6 @@
-package Calculations;
+package com.mycs.calculations;
 
-import Entities.Client;
+import com.mycs.entities.Client;
 
 public class CreditScoreCalculator {
 
