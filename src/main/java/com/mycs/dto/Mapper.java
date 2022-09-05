@@ -1,4 +1,4 @@
-package DTOs;
+package com.mycs.dto;
 
 public class Mapper {
     //TO DO:
