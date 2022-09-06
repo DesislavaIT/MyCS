@@ -4,199 +4,161 @@ import com.mycs.entities.Client;
 
 public class CreditScoreCalculator {
 
-    public static int CalculateCreditScore(Client client)
-    {
+    public static void CalculateCreditScore(Client client) {
         int intercept = 953;
-        int Account_Type_s;
-        int Bureau_Score_s;
-        int Cheque_Card_Flag_s;
-        int Insurance_Required_s;
-        int Loan_Payment_Method_s;
-        int Number_of_Payments_s;
-        int Residential_Status_s;
-        int SP_Number_Of_Searches_L6M_s;
-        int SP_Number_of_CCJs_s;
-        int Time_at_Address_s;
-        int Time_in_Employment_s;
-        int Time_with_Bank_s;
-        int loan_to_income_s;
+        int accountTypeS;
+        int bureauScoreS;
+        int chequeCardFlagS;
+        int insuranceRequiredS;
+        int loanPaymentMethodS;
+        int numberOfPaymentsS;
+        int residentialStatusS;
+        int spNumberOfSearchesL6MS;
+        int spNumberOfCCJsS;
+        int timeAtAddressS;
+        int timeInEmploymentS;
+        int timeWithBankS;
+        int loanToIncomeS;
 
-        if (client.getAccount_Type().equals("VL"))
-        {
-            Account_Type_s = -57;
+        if (client.getAccountType().equals("VL")) {
+            accountTypeS = -57;
         }
-        else
-        {
-            Account_Type_s = 0;
+        else {
+            accountTypeS = 0;
         }
 
-        if (client.getBureau_Score() < 850)
-        {
-            Bureau_Score_s = -48;
+        if (client.getBureauScore() < 850) {
+            bureauScoreS = -48;
         }
-        else if (client.getBureau_Score() < 925)
-        {
-            Bureau_Score_s = 0;
+        else if (client.getBureauScore() < 925) {
+            bureauScoreS = 0;
         }
-        else if (client.getBureau_Score() < 1000)
-        {
-            Bureau_Score_s = 90;
+        else if (client.getBureauScore() < 1000) {
+            bureauScoreS = 90;
         }
-        else
-        {
-            Bureau_Score_s = 109;
+        else {
+            bureauScoreS = 109;
         }
 
-        if (client.getCheque_Card_Flag().equals("N"))
-        {
-            Cheque_Card_Flag_s = -48;
+        if (client.getChequeCardFlag().equals("N")) {
+            chequeCardFlagS = -48;
         }
-        else
-        {
-            Cheque_Card_Flag_s = 0;
+        else {
+            chequeCardFlagS = 0;
         }
 
-        if (client.getInsurance_Required().equals("Y"))
-        {
-            Insurance_Required_s = -24;
+        if (client.getInsuranceRequired().equals("Y")) {
+            insuranceRequiredS = -24;
         }
-        else
-        {
-            Insurance_Required_s = 0;
+        else {
+            insuranceRequiredS = 0;
         }
 
-        if (client.getLoan_Payment_Method().equals("B"))
-        {
-            Loan_Payment_Method_s = 0;
+        if (client.getLoanPaymentMethod().equals("B")) {
+            loanPaymentMethodS = 0;
         }
-        else
-        {
-            Loan_Payment_Method_s = -36;
+        else {
+            loanPaymentMethodS = -36;
         }
 
-        if (client.getNumber_of_Payments() < 18)
-        {
-            Number_of_Payments_s = 102;
+        if (client.getNumberOfPayments() < 18) {
+            numberOfPaymentsS = 102;
         }
-        else
-        {
-            Number_of_Payments_s = 0;
+        else {
+            numberOfPaymentsS = 0;
         }
 
-        if (client.getResidential_Status().equals("H"))
-        {
-            Residential_Status_s = 0;
+        if (client.getResidentialStatus().equals("H")) {
+            residentialStatusS = 0;
         }
-        else
-        {
-            Residential_Status_s = -18;
+        else {
+            residentialStatusS = -18;
         }
 
-        if (client.getSP_Number_Of_Searches_L6M() < 6)
-        {
-            SP_Number_Of_Searches_L6M_s = 0;
+        if (client.getSpNumberOfSearchesL6M() < 6) {
+            spNumberOfSearchesL6MS = 0;
         }
-        else
-        {
-            SP_Number_Of_Searches_L6M_s = -42;
+        else {
+            spNumberOfSearchesL6MS = -42;
         }
 
-        if (client.getSP_Number_of_CCJs() == 0)
-        {
-            SP_Number_of_CCJs_s = 0;
+        if (client.getSpNumberOfCCJs() == 0) {
+            spNumberOfCCJsS = 0;
         }
-        else
-        {
-            SP_Number_of_CCJs_s = -42;
+        else {
+            spNumberOfCCJsS = -42;
         }
 
-        if (client.getTime_at_Address() < 6)
-        {
-            Time_at_Address_s = -21;
+        if (client.getTimeAtAddress() < 6) {
+            timeAtAddressS = -21;
         }
-        else if (client.getTime_at_Address() < 2500)
-        {
-            Time_at_Address_s = 0;
+        else if (client.getTimeAtAddress() < 2500) {
+            timeAtAddressS = 0;
         }
-        else
-        {
-            Time_at_Address_s = 30;
+        else {
+            timeAtAddressS = 30;
         }
 
-        if (client.getTime_in_Employment() < 100)
-        {
-            Time_in_Employment_s = -24;
+        if (client.getTimeInEmployment() < 100) {
+            timeInEmploymentS = -24;
         }
-        else if (client.getTime_in_Employment() < 1200)
-        {
-            Time_in_Employment_s = 0;
+        else if (client.getTimeInEmployment() < 1200) {
+            timeInEmploymentS = 0;
         }
-        else
-        {
-            Time_in_Employment_s = 15;
+        else {
+            timeInEmploymentS = 15;
         }
 
-        if (client.getTime_with_Bank() < 6)
-        {
-            Time_with_Bank_s = -33;
+        if (client.getTimeWithBank() < 6) {
+            timeWithBankS = -33;
         }
-        else if (client.getTime_with_Bank() < 200)
-        {
-            Time_with_Bank_s = -12;
+        else if (client.getTimeWithBank() < 200) {
+            timeWithBankS = -12;
         }
-        else if (client.getTime_with_Bank() < 1000)
-        {
-            Time_with_Bank_s = 0;
+        else if (client.getTimeWithBank() < 1000) {
+            timeWithBankS = 0;
         }
-        else
-        {
-            Time_with_Bank_s = 12;
+        else {
+            timeWithBankS = 12;
         }
 
-        if (client.getLoan_to_income() == -9999998 || client.getLoan_to_income() == -9999997)
-        {
-            loan_to_income_s = 0;
+        if (client.getLoanToIncome() == -9999998 || client.getLoanToIncome() == -9999997) {
+            loanToIncomeS = 0;
         }
-        else if (client.getLoan_to_income() < 5)
-        {
-            loan_to_income_s = 62;
+        else if (client.getLoanToIncome() < 5) {
+            loanToIncomeS = 62;
         }
-        else if (client.getLoan_to_income() < 10)
-        {
-            loan_to_income_s = 21;
+        else if (client.getLoanToIncome() < 10) {
+            loanToIncomeS = 21;
         }
-        else if (client.getLoan_to_income() < 30)
-        {
-            loan_to_income_s = 0;
+        else if (client.getLoanToIncome() < 30) {
+            loanToIncomeS = 0;
         }
-        else if (client.getLoan_to_income() < 60)
-        {
-            loan_to_income_s = -15;
+        else if (client.getLoanToIncome() < 60) {
+            loanToIncomeS = -15;
         }
-        else if (client.getLoan_to_income() < 100)
-        {
-            loan_to_income_s = -24;
+        else if (client.getLoanToIncome() < 100) {
+            loanToIncomeS = -24;
         }
-        else
-        {
-            loan_to_income_s = -36;
+        else {
+            loanToIncomeS = -36;
         }
 
         int score = intercept +
-                Account_Type_s +
-                Bureau_Score_s +
-                Cheque_Card_Flag_s +
-                Insurance_Required_s +
-                Loan_Payment_Method_s +
-                Number_of_Payments_s +
-                Residential_Status_s +
-                SP_Number_Of_Searches_L6M_s +
-                SP_Number_of_CCJs_s +
-                Time_at_Address_s +
-                Time_in_Employment_s +
-                Time_with_Bank_s +
-                loan_to_income_s;
+                accountTypeS +
+                bureauScoreS +
+                chequeCardFlagS +
+                insuranceRequiredS +
+                loanPaymentMethodS +
+                numberOfPaymentsS +
+                residentialStatusS +
+                spNumberOfSearchesL6MS +
+                spNumberOfCCJsS +
+                timeAtAddressS +
+                timeInEmploymentS +
+                timeWithBankS +
+                loanToIncomeS;
 
-        return score;
+        client.setScore(score);
     }
 }
