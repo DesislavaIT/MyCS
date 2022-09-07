@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "clients")
 public class Client {
     @Id
-    private String EGN;
+    private int accountNumber; //start from 100 000
     private String accountType;
     private String chequeCardFlag;
     private String existingCustomerFlag;
@@ -40,8 +40,9 @@ public class Client {
     private double loanToIncome;
     private int score;
 
-    public String PrintInfoToCSV()
-    {
+    //private DateTime data;
+
+    public String printInfoToCSV() {
         return (accountType + "," + chequeCardFlag + "," + existingCustomerFlag + ","
                 + grossAnnualIncome + "," + homeTelephoneNumber + "," + insuranceRequired + ","
                 + loanAmount + "," + loanPaymentFrequency + "," + loanPaymentMethod + ","

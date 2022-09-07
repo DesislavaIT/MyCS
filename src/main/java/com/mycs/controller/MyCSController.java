@@ -1,14 +1,13 @@
 package com.mycs.controller;
 
 import com.mycs.entities.Client;
-import com.mycs.entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 
-import static com.mycs.calculations.CreditScoreCalculator.CalculateCreditScore;
+import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
 import static com.mycs.server.CreditScoreServer.*;
 
 @RestController
@@ -26,22 +25,22 @@ public class MyCSController {
     }
 
     @PostMapping("singleCheck")
-    public String SingleCheck(@RequestBody Client client) {
-        CalculateCreditScore(client);
+    public String singleCheck(@RequestBody Client client) {
+        calculateCreditScore(client);
         return "Client credit score: " + client.getScore();
     }
 
     @PostMapping("batchProcessing")
-    public String BatchProcessing(@RequestBody String fileName) {
+    public ResponseEntity<String> batchProcessing(@RequestBody String fileName) {
         String inputFilePath = "src/main/Input files/" + fileName;
         String outputFilePath = "src/main/Output files/" + fileName;
-        int clientsCount = GetLinesCountInFile(inputFilePath) - 1;
+        //int clientsCount = GetLinesCountInFile(inputFilePath) - 1;
         String line = "";
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
             int counter = -1;
-            Client[] clients = new Client[clientsCount];
+            //Client[] clients = new Client[clientsCount];
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
 
             while ((line = reader.readLine()) != null) {
@@ -52,18 +51,17 @@ public class MyCSController {
                     continue;
                 }
 
-                Client client = CreateClient(line);
-                WriteToFile(writer,
+                Client client = createClient(line);
+                writeToFile(writer,
                         client);
             }
 
             writer.close();
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+        catch (IOException e) {
+            return new ResponseEntity("Fail", HttpStatus.BAD_REQUEST);
         }
 
-        return "File has been processed!";
+        return new ResponseEntity("File has been processed!", HttpStatus.OK);
     }
 }

@@ -4,9 +4,8 @@ import com.mycs.entities.Client;
 import lombok.SneakyThrows;
 
 import java.io.*;
-import java.util.Arrays;
 
-import static com.mycs.calculations.CreditScoreCalculator.CalculateCreditScore;
+import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
 
 public class CreditScoreServer {
 
@@ -18,53 +17,43 @@ public class CreditScoreServer {
 //        }
 //    }
 
-    public static void PrintSummaryInformation(int[] creditScores) {
-        int under820 = 0;
-        int under945 = 0;
-        int under1040 = 0;
-        int above1040 = 0;
-
-        for(int i = 0; i < Arrays.stream(creditScores).count(); i++) {
-            if (creditScores[i] < 820) {
-                under820++;
-            }
-            else if (creditScores[i] < 945) {
-                under945++;
-            }
-            else if (creditScores[i] < 1040) {
-                under1040++;
-            }
-            else {
-                above1040++;
-            }
-        }
-
-        System.out.println("(LOW:820) - " + under820);
-        System.out.println("[820:945) - " + under945);
-        System.out.println("[945:1040) - " + under1040);
-        System.out.println("[1040:HIGH) - " + above1040);
-    }
+//    public static void PrintSummaryInformation(int[] creditScores) {
+//        int under820 = 0;
+//        int under945 = 0;
+//        int under1040 = 0;
+//        int above1040 = 0;
+//
+//        for(int i = 0; i < Arrays.stream(creditScores).count(); i++) {
+//            if (creditScores[i] < 820) {
+//                under820++;
+//            }
+//            else if (creditScores[i] < 945) {
+//                under945++;
+//            }
+//            else if (creditScores[i] < 1040) {
+//                under1040++;
+//            }
+//            else {
+//                above1040++;
+//            }
+//        }
+//
+//        System.out.println("(LOW:820) - " + under820);
+//        System.out.println("[820:945) - " + under945);
+//        System.out.println("[945:1040) - " + under1040);
+//        System.out.println("[1040:HIGH) - " + above1040);
+//    }
 
     //Helper method
-    public static void PrintCreditScores(int[] creditScores) {
-        for(int i = 0; i < Arrays.stream(creditScores).count(); i++) {
-            System.out.println(creditScores[i]);
-        }
-    }
+//    public static void PrintCreditScores(int[] creditScores) {
+//        for(int i = 0; i < Arrays.stream(creditScores).count(); i++) {
+//            System.out.println(creditScores[i]);
+//        }
+//    }
 
-    public static void SortCreditScores(int[] creditScores) {
-        for (int i = 0; i < Arrays.stream(creditScores).count(); i++) {
-            for (int j = 0; j < Arrays.stream(creditScores).count(); j++) {
-                if (creditScores[i] < creditScores[j]) {
-                    int temp = creditScores[i];
-                    creditScores[i] = creditScores[j];
-                    creditScores[j] = temp;
-                }
-            }
-        }
-    }
+//    getLinesCountInFile
 
-    public static int GetLinesCountInFile(String filePath) {
+    public static int getLinesCountInFile(String filePath) {
         int counter = 0;
         try {
             String line = "";
@@ -81,7 +70,7 @@ public class CreditScoreServer {
         return counter;
     }
 
-    public static Client CreateClient(String line) {
+    public static Client createClient(String line) {
         String splitBy = ",";
         String[] lineParts = line.split(splitBy);
         Client client = new Client();
@@ -109,14 +98,14 @@ public class CreditScoreServer {
         client.setSpNumberOfSearchesL6M(Integer.parseInt(lineParts[21]));
         client.setSpNumberOfCCJs(Integer.parseInt(lineParts[22]));
         client.setLoanToIncome(Double.parseDouble(lineParts[23]));
-        CalculateCreditScore(client);
+        calculateCreditScore(client);
 
         return client;
     }
 
     @SneakyThrows
-    public static void WriteToFile(BufferedWriter writer, Client client) {
+    public static void writeToFile(BufferedWriter writer, Client client) {
         writer.append('\n');
-        writer.append(client.PrintInfoToCSV());
+        writer.append(client.printInfoToCSV());
     }
 }

@@ -32,8 +32,7 @@ public class ClientDTO {
     private double loanToIncome;
     private int score;
 
-//    public void PrintInfoToCSV()
-//    {
+//    public void printInfoToCSV() {
 //        System.out.println(accountType + "," + chequeCardFlag + "," + existingCustomerFlag + ","
 //                + grossAnnualIncome + "," + homeTelephoneNumber + "," + insuranceRequired + ","
 //                + loanAmount + "," + loanPaymentFrequency + "," + loanPaymentMethod + ","
