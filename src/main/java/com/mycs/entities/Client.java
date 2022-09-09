@@ -12,32 +12,45 @@ import javax.persistence.*;
 @Entity
 @Table(name = "clients")
 public class Client {
-    @Id
-    private int accountNumber; //start from 100 000
-    private String accountType;
-    private String chequeCardFlag;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @SequenceGenerator(name = "accountNumber_gen", sequenceName = "accountNumber_gen",  initialValue = 100000, allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "accountNumber_gen")
+    private Long accountNumber; //start from 100 000
+    @Column(nullable = false)
+    private String accountType; //mandatory
+    @Column(nullable = false)
+    private String chequeCardFlag; //mandatory
     private String existingCustomerFlag;
+    @Column(nullable = true)
     private int grossAnnualIncome;
     private String homeTelephoneNumber;
-    private String insuranceRequired;
+    @Column(nullable = false)
+    private String insuranceRequired; //mandatory
+    @Column(nullable = true)
     private int loanAmount;
     private String loanPaymentFrequency;
-    private String loanPaymentMethod;
+    @Column(nullable = false)
+    private String loanPaymentMethod; //mandatory
     private String maritalStatus;
+    @Column(nullable = true)
     private int numberOfDependants;
-    private int numberOfPayments;
+    private int numberOfPayments; //mandatory
     private String occupationCode;
     private String promotionType;
-    private String residentialStatus;
-    private int timeAtAddress;
-    private int timeInEmployment;
-    private int timeWithBank;
+    @Column(nullable = false)
+    private String residentialStatus; //mandatory
+    private int timeAtAddress; //mandatory
+    private int timeInEmployment; //mandatory
+    private int timeWithBank; //mandatory
+    @Column(nullable = true)
     private int ageOfApplicant;
-    private int bureauScore;
+    private int bureauScore; //mandatory
+    @Column(nullable = true)
     private int SP_ER_Reference;
-    private int spNumberOfSearchesL6M;
-    private int spNumberOfCCJs;
-    private double loanToIncome;
+    private int spNumberOfSearchesL6M; //mandatory
+    private int spNumberOfCCJs; //mandatory
+    private double loanToIncome; //mandatory
+    @Column(nullable = true)
     private int score;
 
     //private DateTime data;

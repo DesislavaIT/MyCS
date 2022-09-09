@@ -1,23 +1,21 @@
 package com.mycs.server;
 
 import com.mycs.entities.Client;
-import lombok.SneakyThrows;
 
 import java.io.*;
 
 import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
 
-public class CreditScoreServer {
+public class FileService {
 
-    //Helper method
     //TODO: Uncomment when needed
-//    public static void PrintClients(Client[] clients) {
+//    public static void printClients(Client[] clients) {
 //        for(int i = 0; i < Arrays.stream(clients).count(); i++) {
-//            clients[i].PrintInfo();
+//            clients[i].printInfoToCSV();
 //        }
 //    }
 
-//    public static void PrintSummaryInformation(int[] creditScores) {
+//    public static void printSummaryInformation(int[] creditScores) {
 //        int under820 = 0;
 //        int under945 = 0;
 //        int under1040 = 0;
@@ -44,31 +42,28 @@ public class CreditScoreServer {
 //        System.out.println("[1040:HIGH) - " + above1040);
 //    }
 
-    //Helper method
-//    public static void PrintCreditScores(int[] creditScores) {
+//    public static void printCreditScores(int[] creditScores) {
 //        for(int i = 0; i < Arrays.stream(creditScores).count(); i++) {
 //            System.out.println(creditScores[i]);
 //        }
 //    }
 
-//    getLinesCountInFile
-
-    public static int getLinesCountInFile(String filePath) {
-        int counter = 0;
-        try {
-            String line = "";
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-
-            while ((line = reader.readLine()) != null) {
-                counter++;
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return counter;
-    }
+//    public static int getLinesCountInFile(String filePath) {
+//        int counter = 0;
+//        try {
+//            String line = "";
+//            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+//
+//            while ((line = reader.readLine()) != null) {
+//                counter++;
+//            }
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return counter;
+//    }
 
     public static Client createClient(String line) {
         String splitBy = ",";
@@ -98,13 +93,13 @@ public class CreditScoreServer {
         client.setSpNumberOfSearchesL6M(Integer.parseInt(lineParts[21]));
         client.setSpNumberOfCCJs(Integer.parseInt(lineParts[22]));
         client.setLoanToIncome(Double.parseDouble(lineParts[23]));
+        //TODO: client validation
         calculateCreditScore(client);
 
         return client;
     }
 
-    @SneakyThrows
-    public static void writeToFile(BufferedWriter writer, Client client) {
+    public static void writeToFile(PrintWriter writer, Client client) {
         writer.append('\n');
         writer.append(client.printInfoToCSV());
     }

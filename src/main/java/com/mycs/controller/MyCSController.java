@@ -1,47 +1,74 @@
 package com.mycs.controller;
 
 import com.mycs.entities.Client;
+import com.mycs.server.ClientService;
+import com.mycs.exception.ClientNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.NoSuchElementException;
 
 import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
-import static com.mycs.server.CreditScoreServer.*;
+
+import static com.mycs.server.FileService.createClient;
+import static com.mycs.server.FileService.writeToFile;
 
 @RestController
 @RequestMapping("/score")
 public class MyCSController {
 
-    @GetMapping("getHello")
-    public ResponseEntity<String> getHelloEndpoint() {
-        return new ResponseEntity<>("Hello", HttpStatus.OK);
-    }
+    @Autowired
+    private Environment env;
+    @Autowired
+    private ClientService clientService;
 
-    @PostMapping("postSomething")
-    public ResponseEntity<String> postStringEndpoint() {
-        return new ResponseEntity("Something...........", HttpStatus.CREATED);
-    }
+//    @GetMapping("getHello")
+//    public ResponseEntity<String> getHelloEndpoint() {
+//        return new ResponseEntity<>("Hello", HttpStatus.OK);
+//    }
+//
+//    @PostMapping("postSomething")
+//    public ResponseEntity<String> postStringEndpoint() {
+//        return new ResponseEntity("Something...........", HttpStatus.CREATED);
+//    }
 
     @PostMapping("singleCheck")
-    public String singleCheck(@RequestBody Client client) {
+    public ResponseEntity<String> singleCheck(@RequestBody Client client) {
+        //TODO: client validation
         calculateCreditScore(client);
-        return "Client credit score: " + client.getScore();
+        try {
+            String outputFilePath = env.getProperty("csv.output.single.check.path");
+            PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, true));
+
+            writeToFile(writer, client);
+            writer.close();
+        }
+        catch (IOException e) {
+            return new ResponseEntity("File processing was unsuccessful!", HttpStatus.BAD_REQUEST);
+            //TODO: Change error message to be more informative
+        }
+
+        Client newClient = clientService.save(client);
+
+        return new ResponseEntity("Client credit score: " + client.getScore(), HttpStatus.OK);
     }
 
     @PostMapping("batchProcessing")
     public ResponseEntity<String> batchProcessing(@RequestBody String fileName) {
-        String inputFilePath = "src/main/Input files/" + fileName;
-        String outputFilePath = "src/main/Output files/" + fileName;
-        //int clientsCount = GetLinesCountInFile(inputFilePath) - 1;
+
+        String inputFilePath = env.getProperty("csv.input.path") + fileName;
+        String outputFilePath = env.getProperty("csv.output.path") + fileName;
         String line = "";
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
             int counter = -1;
-            //Client[] clients = new Client[clientsCount];
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+            PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath));
 
             while ((line = reader.readLine()) != null) {
                 if (counter == -1) {
@@ -51,17 +78,30 @@ public class MyCSController {
                     continue;
                 }
 
+                //Client validation in createClient() method
                 Client client = createClient(line);
                 writeToFile(writer,
                         client);
+
+                Client newClient = clientService.save(client);
             }
 
             writer.close();
         }
         catch (IOException e) {
-            return new ResponseEntity("Fail", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("File processing was unsuccessful!", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity("File has been processed!", HttpStatus.OK);
+        return new ResponseEntity("File has been processed successfully!", HttpStatus.OK);
+    }
+
+    @GetMapping("/{accountNumber}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public Client getClientByAccountNumber(@PathVariable Long accountNumber) throws ClientNotFoundException {
+        try {
+            return clientService.getClientByAccountNumber(accountNumber);
+        } catch (NoSuchElementException e){
+            throw new ClientNotFoundException(String.format("Can not find client with account number: {%d}", accountNumber));
+        }
     }
 }
