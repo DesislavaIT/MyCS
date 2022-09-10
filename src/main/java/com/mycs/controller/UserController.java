@@ -1,37 +1,45 @@
 package com.mycs.controller;
 
-import com.mycs.security.SecurityService;
+import com.mycs.entities.User;
+import com.mycs.exception.UserNotFoundException;
 import com.mycs.server.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.NoSuchElementException;
+
+@RestController
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private SecurityService securityService;
-
-    @GetMapping("/login")
-    public String login(Model model, String error, String logout) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-
-        return "login";
+    @PostMapping
+    public String create(@RequestBody User user) {
+        User newUser = userService.save(user);
+        return String.format("User %s created.", newUser.getName());
     }
 
-    @GetMapping({"/", "/welcome"})
-    public String welcome(Model model) {
-        return "welcome";
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateUser(@RequestBody User user) {
+        User newUser = userService.getUserByName(user.getName());
+
+        if (newUser != null && newUser.getPassword().equals(user.getPassword())) {
+            return new ResponseEntity<>(String.format("User %s successfully authenticated.", newUser.getName()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Wrong credentials.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT) //206
+    public User getUserByID(@PathVariable Integer id) throws UserNotFoundException {
+        try {
+            return userService.getUserByID(id);
+        } catch (NoSuchElementException e){
+            throw new UserNotFoundException(String.format("Can not find user with ID: {%d}", id));
+        }
     }
 }

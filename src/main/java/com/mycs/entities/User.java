@@ -15,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -30,20 +28,5 @@ public class User {
     private Integer id;
     private String name;
     private String password;
-
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
-    @JoinTable(name = "users_roles",
-            joinColumns = { @JoinColumn(name = "fk_user") },
-            inverseJoinColumns = { @JoinColumn(name = "fk_role") }
-    )
-    private Set<Roles> roles = new HashSet<>();
-
-    public void addRole(Roles role){
-        roles.add(role);
-    }
 
 }
