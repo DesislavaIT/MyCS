@@ -22,36 +22,36 @@ public class Client {
     private String chequeCardFlag; //mandatory
     private String existingCustomerFlag;
     @Column(nullable = true)
-    private Integer grossAnnualIncome;
+    private int grossAnnualIncome;
     private String homeTelephoneNumber;
     @Column(nullable = false)
     private String insuranceRequired; //mandatory
     @Column(nullable = true)
-    private Integer loanAmount;
+    private int loanAmount;
     private String loanPaymentFrequency;
     @Column(nullable = false)
     private String loanPaymentMethod; //mandatory
     private String maritalStatus;
     @Column(nullable = true)
-    private Integer numberOfDependants;
-    private Integer numberOfPayments; //mandatory
+    private int numberOfDependants;
+    private int numberOfPayments; //mandatory
     private String occupationCode;
     private String promotionType;
     @Column(nullable = false)
     private String residentialStatus; //mandatory
-    private Integer timeAtAddress; //mandatory
-    private Integer timeInEmployment; //mandatory
-    private Integer timeWithBank; //mandatory
+    private int timeAtAddress; //mandatory
+    private int timeInEmployment; //mandatory
+    private int timeWithBank; //mandatory
     @Column(nullable = true)
-    private Integer ageOfApplicant;
-    private Integer bureauScore; //mandatory
+    private int ageOfApplicant;
+    private int bureauScore; //mandatory
     @Column(nullable = true)
-    private Integer SP_ER_Reference;
-    private Integer spNumberOfSearchesL6M; //mandatory
-    private Integer spNumberOfCCJs; //mandatory
-    private Double loanToIncome; //mandatory
+    private int SP_ER_Reference;
+    private int spNumberOfSearchesL6M; //mandatory
+    private int spNumberOfCCJs; //mandatory
+    private double loanToIncome; //mandatory
     @Column(nullable = true)
-    private Integer score;
+    private int score;
 
     //private DateTime data;
 
