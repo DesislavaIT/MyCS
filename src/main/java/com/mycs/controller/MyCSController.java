@@ -1,9 +1,11 @@
 package com.mycs.controller;
 
 import com.mycs.entities.Client;
+import com.mycs.exception.ClientValidationException;
 import com.mycs.server.ClientService;
 import com.mycs.exception.ClientNotFoundException;
 
+import com.mycs.server.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -15,9 +17,6 @@ import java.util.NoSuchElementException;
 
 import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
 
-import static com.mycs.server.FileService.createClient;
-import static com.mycs.server.FileService.writeToFile;
-
 @RestController
 @RequestMapping("/score")
 public class MyCSController {
@@ -26,26 +25,28 @@ public class MyCSController {
     private Environment env;
     @Autowired
     private ClientService clientService;
-
-//    @GetMapping("getHello")
-//    public ResponseEntity<String> getHelloEndpoint() {
-//        return new ResponseEntity<>("Hello", HttpStatus.OK);
-//    }
-//
-//    @PostMapping("postSomething")
-//    public ResponseEntity<String> postStringEndpoint() {
-//        return new ResponseEntity("Something...........", HttpStatus.CREATED);
-//    }
+    @Autowired
+    private FileService fileService;
 
     @PostMapping("singleCheck")
-    public ResponseEntity<String> singleCheck(@RequestBody Client client) {
-        //TODO: client validation
+    public ResponseEntity<String> singleCheck(@RequestBody Client client) throws IOException {
+        try {
+            clientService.isValid(client);
+        } catch (ClientValidationException e) {
+            String outputFilePath = env.getProperty("csv.output.single.check.path");
+            PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, true));
+
+            fileService.writeErrorToFile(writer, client.printInfoToCSV(), e.getMessage());
+            writer.close();
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
         calculateCreditScore(client);
         try {
             String outputFilePath = env.getProperty("csv.output.single.check.path");
             PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, true));
 
-            writeToFile(writer, client);
+            fileService.writeClientToFile(writer, client);
             writer.close();
         }
         catch (IOException e) {
@@ -78,17 +79,18 @@ public class MyCSController {
                     continue;
                 }
 
-                //Client validation in createClient() method
-                Client client = createClient(line);
-                writeToFile(writer,
-                        client);
-
-                Client newClient = clientService.save(client);
+                Client client = fileService.createClient(line);
+                try {
+                    clientService.isValid(client);
+                    fileService.writeClientToFile(writer, client);
+                    Client newClient = clientService.save(client);
+                } catch (ClientValidationException e) {
+                    fileService.writeErrorToFile(writer, line, e.getMessage());
+                }
             }
 
             writer.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return new ResponseEntity("File processing was unsuccessful!", HttpStatus.BAD_REQUEST);
         }
 

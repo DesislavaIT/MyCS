@@ -1,7 +1,7 @@
 Account_Type,Cheque_Card_Flag,Existing_Customer_Flag,Gross_Annual_Income,Home_Telephone_Number,Insurance_Required,Loan_Amount,Loan_Payment_Frequency,Loan_Payment_Method,Marital_Status,Number_of_Dependants,Number_of_Payments,Occupation_Code,Promotion_Type,Residential_Status,Time_at_Address,Time_in_Employment,Time_with_Bank,Age_of_Applicant,Bureau_Score,SP_ER_Reference,SP_Number_Of_Searches_L6M,SP_Number_of_CCJs,loan_to_income, credit_score
-VL,N,N,62500,Y,N,227000,F,S,S,0,330,O,RR,T,200,1706,1205,32,519,5,0,0,3.63,835
+VL,N,,62500,Y,N,227000,F,S,S,0,330,O,RR,T,200,1706,1205,32,519,5,0,0,3.63,835
 VL,N,N,2700,Y,N,24700,F,B,D,1,144,M,RR,T,306,403,911,37,673,1,1,0,9.15,803
-FL,Y,N,86800,Y,Y,123700,F,X,M,0,306,M,OT,L,2100,500,810,52,684,5,3,0,1.43,889
+,Y,,86800,Y,Y,123700,F,X,M,0,306,M,OT,L,2100,500,810,52,684,5,3,0,1.43,889
 VL,Y,Y,68600,Y,N,69900,X,B,D,1,168,P,RR,H,100,504,204,43,1056,4,7,0,2.48,1025
 FL,Y,Y,177800,Y,Y,67200,X,S,M,5,78,O,AD,L,0,800,101,37,1129,5,3,0,0.94,1013
 VL,Y,N,85800,Y,N,96200,W,S,D,1,156,B,AD,H,1000,600,303,61,953,4,3,1,1.12,970

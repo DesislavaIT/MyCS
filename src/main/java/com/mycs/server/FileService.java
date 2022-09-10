@@ -1,13 +1,20 @@
 package com.mycs.server;
 
 import com.mycs.entities.Client;
+import com.mycs.exception.ClientValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 
 import static com.mycs.calculations.CreditScoreCalculator.calculateCreditScore;
 
+@Service
 public class FileService {
-
+    @Autowired
+    private ClientService clientService;
     //TODO: Uncomment when needed
 //    public static void printClients(Client[] clients) {
 //        for(int i = 0; i < Arrays.stream(clients).count(); i++) {
@@ -65,7 +72,7 @@ public class FileService {
 //        return counter;
 //    }
 
-    public static Client createClient(String line) {
+    public Client createClient(String line) {
         String splitBy = ",";
         String[] lineParts = line.split(splitBy);
         Client client = new Client();
@@ -93,14 +100,23 @@ public class FileService {
         client.setSpNumberOfSearchesL6M(Integer.parseInt(lineParts[21]));
         client.setSpNumberOfCCJs(Integer.parseInt(lineParts[22]));
         client.setLoanToIncome(Double.parseDouble(lineParts[23]));
-        //TODO: client validation
+
+//        clientService.isValid(client);
+
         calculateCreditScore(client);
 
         return client;
     }
 
-    public static void writeToFile(PrintWriter writer, Client client) {
+    public void writeClientToFile(PrintWriter writer, Client client) {
         writer.append('\n');
         writer.append(client.printInfoToCSV());
+    }
+
+    public void writeErrorToFile(PrintWriter writer, String line, String errorMessage) {
+        writer.append('\n');
+        writer.append(line);
+        writer.append(", Error:");
+        writer.append(errorMessage);
     }
 }
