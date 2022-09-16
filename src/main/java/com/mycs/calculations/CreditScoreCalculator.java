@@ -3,7 +3,6 @@ package com.mycs.calculations;
 import com.mycs.entities.Client;
 
 public class CreditScoreCalculator {
-
     public static void calculateCreditScore(Client client) {
         int intercept = 953;
         int accountTypeS = getAccountTypeS(client);
