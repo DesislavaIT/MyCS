@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyCS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+<link rel="stylesheet" href="/css/styleBatch.css">
+</head>
+<body>
+
+<div class="main">
+    <div class="navbar">
+        <div class="icon">
+            <h2 class="logo"><spam class="My">My</spam>CS</h2>
+        </div>
+
+        <div class="menu">
+            <ul>
+                <div sec:authorize="isAuthenticated()">
+                    <li><a href="#">SINGLE PROCESSING</a></li>
+                    <li><a href="/batch">BATCH PROCESSING</a></li>
+                </div>
+                <li><a href="#">PRIVACY POLICY</a></li>
+                <li><a href="/contact">CONTACT US</a></li>
+                <div sec:authorize="!isAuthenticated()">
+                    <li><a href="/login">LOGIN</a></li>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <form id="logoutForm" method="POST" th:action="@{/logout}">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                    <li>Welcome <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+<br><br>
+    <div class="search">
+        <input class="srch" type="search" name="" placeholder="Search a client">
+        <a href="#"> <button class="btn">Search</button></a>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
