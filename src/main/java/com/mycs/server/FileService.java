@@ -1,5 +1,6 @@
 package com.mycs.server;
 
+import com.mycs.entities.AccountType;
 import com.mycs.entities.Client;
 
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class FileService {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            return counter;
         }
 
         return counter;
@@ -133,24 +134,21 @@ public class FileService {
 
     private void setResidentialStatus(String[] lineParts, Client client) {
         client.setResidentialStatus(lineParts[14]);
-        if(client.getResidentialStatus().isEmpty())
-        {
+        if(client.getResidentialStatus().isEmpty()) {
             client.setResidentialStatus(null);
         }
     }
 
     private void setPromotionType(String[] lineParts, Client client) {
         client.setPromotionType(lineParts[13]);
-        if(client.getPromotionType().isEmpty())
-        {
+        if(client.getPromotionType().isEmpty()) {
             client.setPromotionType(null);
         }
     }
 
     private void setOccupationCode(String[] lineParts, Client client) {
         client.setOccupationCode(lineParts[12]);
-        if(client.getOccupationCode().isEmpty())
-        {
+        if(client.getOccupationCode().isEmpty()) {
             client.setOccupationCode(null);
         }
     }
@@ -173,24 +171,21 @@ public class FileService {
 
     private void setMaritalStatus(String[] lineParts, Client client) {
         client.setMaritalStatus(lineParts[9]);
-        if(client.getMaritalStatus().isEmpty())
-        {
+        if(client.getMaritalStatus().isEmpty()) {
             client.setMaritalStatus(null);
         }
     }
 
     private void setLoanPaymentMethod(String[] lineParts, Client client) {
         client.setLoanPaymentMethod(lineParts[8]);
-        if(client.getLoanPaymentMethod().isEmpty())
-        {
+        if(client.getLoanPaymentMethod().isEmpty()) {
             client.setLoanPaymentMethod(null);
         }
     }
 
     private void setLoanPaymentFrequency(String[] lineParts, Client client) {
         client.setLoanPaymentFrequency(lineParts[7]);
-        if(client.getLoanPaymentFrequency().isEmpty())
-        {
+        if(client.getLoanPaymentFrequency().isEmpty()) {
             client.setLoanPaymentFrequency(null);
         }
     }
@@ -205,16 +200,14 @@ public class FileService {
 
     private void setInsuranceRequired(String[] lineParts, Client client) {
         client.setInsuranceRequired(lineParts[5]);
-        if(client.getInsuranceRequired().isEmpty())
-        {
+        if(client.getInsuranceRequired().isEmpty()) {
             client.setInsuranceRequired(null);
         }
     }
 
     private void setHomeTelephoneNumber(String[] lineParts, Client client) {
         client.setHomeTelephoneNumber(lineParts[4]);
-        if(client.getHomeTelephoneNumber().isEmpty())
-        {
+        if(client.getHomeTelephoneNumber().isEmpty()) {
             client.setHomeTelephoneNumber(null);
         }
     }
@@ -229,25 +222,25 @@ public class FileService {
 
     private void setExistingCustomerFlag(String[] lineParts, Client client) {
         client.setExistingCustomerFlag(lineParts[2]);
-        if(client.getExistingCustomerFlag().isEmpty())
-        {
+        if(client.getExistingCustomerFlag().isEmpty()) {
             client.setExistingCustomerFlag(null);
         }
     }
 
     private void setChequeCardFlag(String[] lineParts, Client client) {
         client.setChequeCardFlag(lineParts[1]);
-        if(client.getChequeCardFlag().isEmpty())
-        {
+        if(client.getChequeCardFlag().isEmpty()) {
             client.setChequeCardFlag(null);
         }
     }
 
     private void setAccountType(String[] lineParts, Client client) {
-        client.setAccountType(lineParts[0]);
-        if(client.getAccountType().isEmpty())
-        {
-            client.setAccountType(null);
+        if (lineParts[0].equals("VL")) {
+            client.setAccountType(AccountType.VL);
+        } else if (lineParts[0].equals("FL")) {
+            client.setAccountType(AccountType.FL);
+        } else {
+            client.setAccountType(AccountType.Wrong);
         }
     }
 
@@ -260,5 +253,18 @@ public class FileService {
         writeClientToFile(writer, client);
         writer.append(",");
         writer.append(errorMessage);
+    }
+
+    public String getFileExtension(String fileName)
+    {
+        String fileExtension="";
+
+        // If fileName do not contain "." or starts with "." then it is not a valid file
+        if(fileName.contains(".") && fileName.lastIndexOf(".")!= 0)
+        {
+            fileExtension=fileName.substring(fileName.lastIndexOf(".")+1);
+        }
+
+        return fileExtension;
     }
 }

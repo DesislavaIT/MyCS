@@ -20,8 +20,8 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "AccountNumber_Gen")
     private Long accountNumber; //start from 100 000
-    @Column(nullable = false)
-    private String accountType; //mandatory
+    @Enumerated(EnumType.ORDINAL)
+    private AccountType accountType; //mandatory
     @Column(nullable = false)
     private String chequeCardFlag; //mandatory
     private String existingCustomerFlag;
@@ -56,7 +56,7 @@ public class Client {
         String pattern = "dd/MM/yyyy HH:mm:ss";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
         String lastTimeModifiedS = lastTimeModified.format(dateTimeFormatter);
-        return ((accountType == null ? "" : accountType) + ","
+        return ((accountType == null || accountType == AccountType.Wrong ? "" : accountType.toString()) + ","
                 + (chequeCardFlag == null ? "" : chequeCardFlag) + ","
                 + (existingCustomerFlag == null ? "" : existingCustomerFlag) + ","
                 + (grossAnnualIncome == null ? "" : grossAnnualIncome) + ","

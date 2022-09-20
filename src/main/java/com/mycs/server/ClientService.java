@@ -15,50 +15,173 @@ public class ClientService {
         return clientRepository.findById(accountNumber).get();
     }
 
-    public void save(Client client) { clientRepository.save(client); }
+    public void save(Client client) {
+        clientRepository.save(client);
+    }
 
     public Boolean isValid(Client client) throws ClientValidationException {
-        if(client.getAccountType() == null || client.getAccountType().isEmpty()) {
-            throw new ClientValidationException("Account_Type must be VL or FL!");
-        }
-        if(client.getChequeCardFlag() == null || client.getChequeCardFlag().isEmpty()) {
-            throw new ClientValidationException("Cheque_Card_Flag can not be empty!");
-        }
-        if(client.getInsuranceRequired() == null || client.getInsuranceRequired().isEmpty()) {
-            throw new ClientValidationException("Insurance_Required can not be empty!");
-        }
-        if(client.getLoanPaymentMethod() == null || client.getLoanPaymentMethod().isEmpty()) {
-            throw new ClientValidationException("Loan_Payment_Method can not be empty!");
-        }
-        if(client.getNumberOfPayments() == null || client.getNumberOfPayments() < 0) {
-            throw new ClientValidationException("Number_of_Payments can not be empty or negative number!");
-        }
-        if(client.getResidentialStatus() == null || client.getResidentialStatus().isEmpty()) {
-            throw new ClientValidationException("Residential_Status can not be empty!");
-        }
-        if(client.getTimeAtAddress() == null || client.getTimeAtAddress() < 0) {
-            throw new ClientValidationException("Time_at_Address can not be empty or negative number!");
-        }
-        if(client.getTimeInEmployment() == null || client.getTimeInEmployment() < 0) {
-            throw new ClientValidationException("Time_in_Employment can not be empty or negative number!");
-        }
-        if(client.getTimeWithBank() == null || client.getTimeWithBank() < 0) {
-            throw new ClientValidationException("Time_with_Bank can not be empty or negative number!");
-        }
-        if(client.getBureauScore() == null || client.getBureauScore() < 0) {
-            throw new ClientValidationException("Bureau_Score can not be empty or negative number!");
-        }
-        if(client.getSpNumberOfSearchesL6M() == null || client.getSpNumberOfSearchesL6M() < 0) {
-            throw new ClientValidationException("SP_Number_Of_Searches_L6M can not be empty or negative number!");
-        }
-        if(client.getSpNumberOfCCJs() == null || client.getSpNumberOfCCJs() < 0) {
-            throw new ClientValidationException("SP_Number_of_CCJs can not be empty or negative number!");
-        }
-        if(client.getLoanToIncome() == null || client.getLoanToIncome() < 0) {
-            throw new ClientValidationException("loan_to_income can not be empty or negative number!");
+        Boolean isValid = true;
+        StringBuilder exceptionMessage = new StringBuilder();
+
+        isValid = getaBooleanAccountType(client, isValid, exceptionMessage);
+        isValid = getBooleanChequeCardFlag(client, isValid, exceptionMessage);
+        isValid = getaBooleanInsuranceRequired(client, isValid, exceptionMessage);
+        isValid = getaBooleanLoanPaymentMethod(client, isValid, exceptionMessage);
+        isValid = getaBooleanNumberOfPayments(client, isValid, exceptionMessage);
+        isValid = getaBooleanResidentialStatus(client, isValid, exceptionMessage);
+        isValid = getaBooleanTimeAtAddress(client, isValid, exceptionMessage);
+        isValid = getaBooleanTimeInEmployment(client, isValid, exceptionMessage);
+        isValid = getaBooleanTimeWithBank(client, isValid, exceptionMessage);
+        isValid = getaBooleanBureauScore(client, isValid, exceptionMessage);
+        isValid = getaBooleanSpNumberOfSearchesL6M(client, isValid, exceptionMessage);
+        isValid = getaBooleanSpNumberOfCCJs(client, isValid, exceptionMessage);
+        isValid = getaBooleanLoanToIncome(client, isValid, exceptionMessage);
+
+        if (!isValid) {
+            throw new ClientValidationException(exceptionMessage.toString());
         }
 
         return true;
+    }
+
+    private Boolean getaBooleanLoanToIncome(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getLoanToIncome() == null || client.getLoanToIncome() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("loan_to_income can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanSpNumberOfCCJs(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getSpNumberOfCCJs() == null || client.getSpNumberOfCCJs() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("SP_Number_of_CCJs can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanSpNumberOfSearchesL6M(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getSpNumberOfSearchesL6M() == null || client.getSpNumberOfSearchesL6M() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("SP_Number_Of_Searches_L6M can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanBureauScore(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getBureauScore() == null || client.getBureauScore() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Bureau_Score can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanTimeWithBank(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getTimeWithBank() == null || client.getTimeWithBank() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Time_with_Bank can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanTimeInEmployment(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getTimeInEmployment() == null || client.getTimeInEmployment() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Time_in_Employment can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanTimeAtAddress(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getTimeAtAddress() == null || client.getTimeAtAddress() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Time_at_Address can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanResidentialStatus(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getResidentialStatus() == null || client.getResidentialStatus().isEmpty()) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Residential_Status can not be empty!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanNumberOfPayments(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getNumberOfPayments() == null || client.getNumberOfPayments() < 0) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Number_of_Payments can not be empty or negative number!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanLoanPaymentMethod(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getLoanPaymentMethod() == null || client.getLoanPaymentMethod().isEmpty()) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Loan_Payment_Method can not be empty!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanInsuranceRequired(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getInsuranceRequired() == null || client.getInsuranceRequired().isEmpty()) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Insurance_Required can not be empty!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getBooleanChequeCardFlag(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getChequeCardFlag() == null || client.getChequeCardFlag().isEmpty()) {
+            if (!isValid) {
+                exceptionMessage.append(System.getProperty("line.separator"));
+            }
+            exceptionMessage.append("Cheque_Card_Flag can not be empty!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private Boolean getaBooleanAccountType(Client client, Boolean isValid, StringBuilder exceptionMessage) {
+        if (client.getAccountType() == null || (client.getAccountType().toString().equals("Wrong"))) {
+            exceptionMessage.append("Account_Type must be VL or FL!");
+            isValid = false;
+        }
+        return isValid;
     }
 
     public void cloneClient(Client oldClient, Client newClient) {
