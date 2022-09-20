@@ -7,6 +7,8 @@ import com.mycs.server.ClientService;
 
 import com.mycs.server.FileService;
 import com.mycs.server.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class MyCSController {
     @Autowired
     private FileService fileService;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+
     @PostMapping("singleCheck")
     public ResponseEntity<String> singleCheck(@RequestBody Client client) throws IOException {
         DBLog DBLog = new DBLog();
@@ -49,6 +53,8 @@ public class MyCSController {
             DBLog.setTime(LocalDateTime.now());
             DBLog.setMessage("Invalid data: " + e.getMessage());
             logService.save(DBLog);
+
+            LOGGER.error("Wrong client data: {}", e.getMessage(), e);
 
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
