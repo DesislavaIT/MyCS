@@ -32,7 +32,7 @@ public class ClientController {
     @Autowired
     private LogService logService;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
 
     @GetMapping("/{accountNumber}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)

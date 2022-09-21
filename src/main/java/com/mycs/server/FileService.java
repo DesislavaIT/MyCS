@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class FileService {
-    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileService.class);
 
     public int getLinesCountInFile(String filePath) {
         int counter = 0;

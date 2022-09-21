@@ -23,7 +23,7 @@ public class UserRestController {
     @Autowired
     private LogService logService;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
 
     @PostMapping
     public String create(@RequestBody User user) {
