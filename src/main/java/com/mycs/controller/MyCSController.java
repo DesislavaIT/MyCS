@@ -100,6 +100,8 @@ public class MyCSController {
                 try {
                     counter = getCounter(scores, counter, writer, client);
                 } catch (ClientValidationException e) {
+                    LOGGER.error("Wrong client data: {}", e.getMessage(), e);
+
                     fileService.writeErrorToFile(writer, client, e.getMessage());
                 }
             }
@@ -109,6 +111,8 @@ public class MyCSController {
             DBLog.setTime(LocalDateTime.now());
             DBLog.setMessage(String.format("File %s is wrongly formatted or can not be found.", fileName));
             logService.save(DBLog);
+
+            LOGGER.error("Wrong formatted file or file not found: {}", e.getMessage(), e);
 
             return new ResponseEntity(String.format("File %s is wrongly formatted or can not be found.", fileName), HttpStatus.BAD_REQUEST);
         }

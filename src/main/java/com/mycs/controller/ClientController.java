@@ -9,6 +9,8 @@ import com.mycs.exception.ClientValidationException;
 import com.mycs.server.ClientService;
 import com.mycs.server.LogService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -30,12 +32,16 @@ public class ClientController {
     @Autowired
     private LogService logService;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+
     @GetMapping("/{accountNumber}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public Client getClientByAccountNumber(@PathVariable Long accountNumber) throws ClientNotFoundException {
         try {
             return clientService.getClientByAccountNumber(accountNumber);
         } catch (NoSuchElementException e){
+            LOGGER.error("Wrong account number: {}", e.getMessage(), e);
+
             throw new ClientNotFoundException(String.format("Can not find client with account number: {%d}", accountNumber));
         }
     }
@@ -55,6 +61,8 @@ public class ClientController {
                 DBLog.setMessage("Invalid data: " + e.getMessage());
                 logService.save(DBLog);
 
+                LOGGER.error("Wrong client data: {}", e.getMessage(), e);
+
                 return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
             clientService.cloneClient(oldClient, newClient);
@@ -68,6 +76,8 @@ public class ClientController {
             clientService.save(oldClient);
             return new ResponseEntity(String.format("Client with account number %d was updated successfully.", oldClient.getAccountNumber()), HttpStatus.OK);
         } catch (ClientNotFoundException e) {
+            LOGGER.error("Wrong account number: {}", e.getMessage(), e);
+
             return new ResponseEntity(String.format("Can not find client with account number: %d", accountNumber), HttpStatus.NOT_FOUND);
         }
     }

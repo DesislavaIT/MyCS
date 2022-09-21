@@ -1,8 +1,11 @@
 package com.mycs.server;
 
+import com.mycs.controller.MyCSController;
 import com.mycs.entities.AccountType;
 import com.mycs.entities.Client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -10,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class FileService {
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+
     public int getLinesCountInFile(String filePath) {
         int counter = 0;
         try {
@@ -21,6 +26,8 @@ public class FileService {
             }
         }
         catch (IOException e) {
+            LOGGER.error("The file was not read correctly: {}", e.getMessage(), e);
+
             return counter;
         }
 
@@ -64,6 +71,8 @@ public class FileService {
         try {
             client.setLoanToIncome(Double.parseDouble(lineParts[23]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting loan to income: {}", e.getMessage(), e);
+
             client.setLoanToIncome(null);
         }
     }
@@ -72,6 +81,8 @@ public class FileService {
         try {
             client.setSpNumberOfCCJs(Integer.parseInt(lineParts[22]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting SpNumber of CCJs: {}", e.getMessage(), e);
+
             client.setSpNumberOfCCJs(null);
         }
     }
@@ -80,6 +91,8 @@ public class FileService {
         try {
             client.setSpNumberOfSearchesL6M(Integer.parseInt(lineParts[21]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting SpNumber of searches L6M: {}", e.getMessage(), e);
+
             client.setSpNumberOfSearchesL6M(null);
         }
     }
@@ -88,6 +101,8 @@ public class FileService {
         try {
             client.setSpErReference(Integer.parseInt(lineParts[20]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting SpEr reference: {}", e.getMessage(), e);
+
             client.setSpErReference(null);
         }
     }
@@ -96,6 +111,8 @@ public class FileService {
         try {
             client.setBureauScore(Integer.parseInt(lineParts[19]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting bureau score: {}", e.getMessage(), e);
+
             client.setBureauScore(null);
         }
     }
@@ -104,6 +121,8 @@ public class FileService {
         try {
             client.setAgeOfApplicant(Integer.parseInt(lineParts[18]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting applicant age: {}", e.getMessage(), e);
+
             client.setAgeOfApplicant(null);
         }
     }
@@ -112,6 +131,8 @@ public class FileService {
         try {
             client.setTimeWithBank(Integer.parseInt(lineParts[17]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting time with bank: {}", e.getMessage(), e);
+
             client.setTimeWithBank(null);
         }
     }
@@ -120,6 +141,8 @@ public class FileService {
         try {
             client.setTimeInEmployment(Integer.parseInt(lineParts[16]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting SpNumber of CCJs: {}", e.getMessage(), e);
+
             client.setTimeInEmployment(null);
         }
     }
@@ -128,6 +151,8 @@ public class FileService {
         try {
             client.setTimeAtAddress(Integer.parseInt(lineParts[15]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting time at address: {}", e.getMessage(), e);
+
             client.setTimeAtAddress(null);
         }
     }
@@ -157,6 +182,8 @@ public class FileService {
         try {
             client.setNumberOfPayments(Integer.parseInt(lineParts[11]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting number of payments: {}", e.getMessage(), e);
+
             client.setNumberOfPayments(null);
         }
     }
@@ -165,6 +192,8 @@ public class FileService {
         try {
             client.setNumberOfDependants(Integer.parseInt(lineParts[10]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting number of dependants: {}", e.getMessage(), e);
+
             client.setNumberOfDependants(null);
         }
     }
@@ -194,6 +223,8 @@ public class FileService {
         try {
             client.setLoanAmount(Integer.parseInt(lineParts[6]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting loan amount: {}", e.getMessage(), e);
+
             client.setLoanAmount(null);
         }
     }
@@ -216,6 +247,8 @@ public class FileService {
         try {
             client.setGrossAnnualIncome(Integer.parseInt(lineParts[3]));
         } catch (Exception e) {
+            LOGGER.error("Issue with setting gross annual income: {}", e.getMessage(), e);
+
             client.setGrossAnnualIncome(null);
         }
     }

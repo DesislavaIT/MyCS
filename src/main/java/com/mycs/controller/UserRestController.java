@@ -5,6 +5,8 @@ import com.mycs.entities.User;
 import com.mycs.exception.UserNotFoundException;
 import com.mycs.server.LogService;
 import com.mycs.server.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ public class UserRestController {
     private UserService userService;
     @Autowired
     private LogService logService;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
 
     @PostMapping
     public String create(@RequestBody User user) {
@@ -51,6 +55,8 @@ public class UserRestController {
         try {
             return userService.getUserByID(id);
         } catch (NoSuchElementException e){
+            LOGGER.error("Wrong user ID: {}", e.getMessage(), e);
+
             throw new UserNotFoundException(String.format("Can not find user with ID: {%d}", id));
         }
     }
