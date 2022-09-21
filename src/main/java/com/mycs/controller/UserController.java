@@ -61,6 +61,14 @@ public class UserController {
         return "batch";
     }
 
+    @GetMapping("/singlepro")
+    public String singlepro(Model model) {
+        if (!securityService.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        return "singlepro";
+    }
+
     @GetMapping({"/", "/welcome"})
     public String welcome(Model model) {
         if (!securityService.isAuthenticated()) {

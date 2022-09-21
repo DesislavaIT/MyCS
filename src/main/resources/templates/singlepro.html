@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <link rel="stylesheet" href="/css/styleBatch.css">
+</head>
+<body>
+
+    <div class="mainSin">
+        <div class="navbar">
+            <div class="icon">
+                <h2 class="logo"><spam class="My">My</spam>CS</h2>
+            </div>
+
+            <div class="menu">
+                <ul>
+                    <div sec:authorize="isAuthenticated()">
+                        <li><a href="/singlepro">SINGLE PROCESSING</a></li>
+                        <li><a href="/batch">BATCH PROCESSING</a></li>
+                    </div>
+                    <li><a href="#">PRIVACY POLICY</a></li>
+                    <li><a href="/contact">CONTACT US</a></li>
+                    <div sec:authorize="!isAuthenticated()">
+                        <li><a href="/login">LOGIN</a></li>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        <li>Welcome <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a></li>
+                    </div>
+                </ul>
+            </div>
+
+            <div class="search">
+                <input class="srch" type="search" name="" placeholder="Search a client">
+                <a href="#"> <button class="btn">Search</button></a>
+            </div>
+
+        </div>
+        <br><br>
+        <div class="wrapper">
+              <form method="post" th:action="@{/singleCheck}">
+                  <h1>ENTER client information.</h1>
+                  <label for="accType">Enter Account type: </label>
+                  <input type="text" name="accType" id="accType" placeholder="Account type"/><br/><br>
+                  <label for="card">Enter Cheque card: </label>
+                  <input type="text" name="card" id="card" placeholder="Cheque card"/><br/><br>
+                  <label for="insur">Enter Insurance Required: </label>
+                  <input type="text" name="insur" id="insur" placeholder="Insurance Required"/><br/><br>
+                  <label for="payment">Enter Payment method: </label>
+                  <input type="text" name="payment" id="payment" placeholder="Payment method"/><br/><br>
+                  <label for="numPayment">Enter Number of payments: </label>
+                  <input type="text" name="numPayment" id="numPayment" placeholder="Number of payments"/><br/><br>
+                  <label for="residential">Enter Residential status: </label>
+                  <input type="text" name="residential" id="residential" placeholder="Residential status"/><br/><br>
+                  <label for="timeAddr">Enter Time at address: </label>
+                  <input type="text" name="timeAddr" id="timeAddr" placeholder="Time at address"/><br/><br>
+                  <label for="timeEmpl">Enter Time in employment: </label>
+                  <input type="text" name="timeEmpl" id="timeEmpl" placeholder="Time in employment"/><br/><br>
+                  <label for="timeBank">Enter Time with bank: </label>
+                  <input type="text" name="timeBank" id="timeBank" placeholder="Time with bank"/><br/><br>
+                  <label for="bureau">Enter Bureau score: </label>
+                  <input type="text" name="bureau" id="bureau" placeholder="Bureau score"/><br/><br>
+                  <label for="numSearch">Enter Number of searches: </label>
+                  <input type="text" name="numSearch" id="numSearch" placeholder="Number of searches"/><br/><br>
+                  <label for="numCCJ">Enter Number of CCjs: </label>
+                  <input type="text" name="numCCJ" id="numCCJ" placeholder="Number of CCjs"/><br/><br>
+                  <label for="loanInc">Enter Loan to income: </label>
+                  <input type="text" name="loanInc" id="loanInc" placeholder="Loan to income"/><br/><br/>
+                  <button type="submit" class="btn btn-primary">Submit</button><br/>
+              </form>
+            </div>
+        <br><br>
+    </div>
+</body>
+</html>
