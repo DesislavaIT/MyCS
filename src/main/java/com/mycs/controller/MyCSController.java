@@ -1,5 +1,6 @@
 package com.mycs.controller;
 
+import com.mycs.dto.ClientDTO;
 import com.mycs.entities.Client;
 import com.mycs.entities.DBLog;
 import com.mycs.exception.ClientValidationException;
@@ -7,6 +8,8 @@ import com.mycs.server.ClientService;
 
 import com.mycs.server.FileService;
 import com.mycs.server.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -30,43 +33,30 @@ public class MyCSController {
     @Autowired
     private FileService fileService;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCSController.class);
+
     @PostMapping("singleCheck")
-    public ResponseEntity<String> singleCheck(@RequestBody Client client) throws IOException {
+    public ResponseEntity<String> singleCheck(@RequestBody ClientDTO clientDTO) {
+        Client client = clientDTO.toClient();
+
         DBLog DBLog = new DBLog();
         DBLog.setEndPoint("score/singleCheck");
         //TODO: DBLog.setUserName();
 
-        client.setLastTimeModified(LocalDateTime.now());
         try {
             clientService.isValid(client);
-        } catch (ClientValidationException e) {
-            String outputFilePath = env.getProperty("csv.output.single.check.path");
-            PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, true));
-
-            fileService.writeErrorToFile(writer, client, e.getMessage());
-            writer.close();
-
+        } catch (Exception e) {
             DBLog.setTime(LocalDateTime.now());
             DBLog.setMessage("Invalid data: " + e.getMessage());
             logService.save(DBLog);
+
+            LOGGER.error("Wrong client data: {}", e.getMessage(), e);
 
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         calculateCreditScore(client);
         client.setLastTimeModified(LocalDateTime.now());
-        try {
-            String outputFilePath = env.getProperty("csv.output.single.check.path");
-            PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, true));
-
-            fileService.writeClientToFile(writer, client);
-            writer.close();
-        }
-        catch (IOException e) {
-            return new ResponseEntity("File processing was unsuccessful!", HttpStatus.BAD_REQUEST);
-            //TODO: Change error message to be more informative
-        }
-
         clientService.save(client);
 
         DBLog.setTime(LocalDateTime.now());
@@ -82,13 +72,16 @@ public class MyCSController {
         DBLog.setEndPoint("score/batchProcessing");
         //TODO: DBLog.setUserName();
 
-        if(fileExists(fileName)) {
+        if (!fileService.getFileExtension(fileName).equals("csv")) {
             DBLog.setTime(LocalDateTime.now());
-            DBLog.setMessage(String.format("File with the name %s has already been processed.", fileName));
+            DBLog.setMessage(String.format("Wrong file format: File %s is not CSV file!.", fileName));
             logService.save(DBLog);
 
-            return new ResponseEntity(String.format("File with the name %s has already been processed.", fileName), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(String.format("Wrong file format: File %s should be in CSV format.", fileName), HttpStatus.BAD_REQUEST);
         }
+
+        ResponseEntity responseEntityOutputFile = getResponseEntityOutputFile(fileName, DBLog);
+        if (responseEntityOutputFile != null) return responseEntityOutputFile;
 
         String inputFilePath = env.getProperty("csv.input.path") + fileName;
         String outputFilePath = env.getProperty("csv.output.path") + fileName;
@@ -98,26 +91,17 @@ public class MyCSController {
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
-            Boolean isFirstLine = true;
             PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath));
+            reader.readLine();
+            writer.write("Account_Type,Cheque_Card_Flag,Existing_Customer_Flag,Gross_Annual_Income,Home_Telephone_Number,Insurance_Required,Loan_Amount,Loan_Payment_Frequency,Loan_Payment_Method,Marital_Status,Number_of_Dependants,Number_of_Payments,Occupation_Code,Promotion_Type,Residential_Status,Time_at_Address,Time_in_Employment,Time_with_Bank,Age_of_Applicant,Bureau_Score,SP_ER_Reference,SP_Number_Of_Searches_L6M,SP_Number_of_CCJs,loan_to_income,Last_Time_Modified,Credit_Score,Error");
 
             while ((line = reader.readLine()) != null) {
-                if (isFirstLine) {
-                    writer.write("Account_Type,Cheque_Card_Flag,Existing_Customer_Flag,Gross_Annual_Income,Home_Telephone_Number,Insurance_Required,Loan_Amount,Loan_Payment_Frequency,Loan_Payment_Method,Marital_Status,Number_of_Dependants,Number_of_Payments,Occupation_Code,Promotion_Type,Residential_Status,Time_at_Address,Time_in_Employment,Time_with_Bank,Age_of_Applicant,Bureau_Score,SP_ER_Reference,SP_Number_Of_Searches_L6M,SP_Number_of_CCJs,loan_to_income,Last_Time_Modified,Credit_Score,Error");
-
-                    isFirstLine = false;
-                    continue;
-                }
-
                 Client client = fileService.createClient(line);
                 try {
-                    clientService.isValid(client);
-                    calculateCreditScore((client));
-                    client.setLastTimeModified(LocalDateTime.now());
-                    fileService.writeClientToFile(writer, client);
-                    clientService.save(client);
-                    scores[counter++] = client.getScore();
+                    counter = getCounter(scores, counter, writer, client);
                 } catch (ClientValidationException e) {
+                    LOGGER.error("Wrong client data: {}", e.getMessage(), e);
+
                     fileService.writeErrorToFile(writer, client, e.getMessage());
                 }
             }
@@ -125,11 +109,14 @@ public class MyCSController {
             writer.close();
         } catch (IOException e) {
             DBLog.setTime(LocalDateTime.now());
-            DBLog.setMessage(String.format("File %s is wrongly formatted.", fileName));
+            DBLog.setMessage(String.format("File %s is wrongly formatted or can not be found.", fileName));
             logService.save(DBLog);
 
-            return new ResponseEntity(String.format("File %s is wrongly formatted.", fileName), HttpStatus.BAD_REQUEST);
+            LOGGER.error("Wrong formatted file or file not found: {}", e.getMessage(), e);
+
+            return new ResponseEntity(String.format("File %s is wrongly formatted or can not be found.", fileName), HttpStatus.BAD_REQUEST);
         }
+
         DBLog.setTime(LocalDateTime.now());
         DBLog.setMessage(String.format("File %s has been processed successfully.", fileName));
         logService.save(DBLog);
@@ -137,7 +124,28 @@ public class MyCSController {
         return new ResponseEntity(printSummaryInformation(scores, counter), HttpStatus.OK);
     }
 
-    private Boolean fileExists(String fileName)
+    private int getCounter(int[] scores, int counter, PrintWriter writer, Client client) throws ClientValidationException {
+        clientService.isValid(client);
+        calculateCreditScore(client);
+        client.setLastTimeModified(LocalDateTime.now());
+        fileService.writeClientToFile(writer, client);
+        clientService.save(client);
+        scores[counter++] = client.getScore();
+        return counter;
+    }
+
+    private ResponseEntity getResponseEntityOutputFile(String fileName, DBLog log) {
+        if(outputFileExists(fileName)) {
+            log.setTime(LocalDateTime.now());
+            log.setMessage(String.format("File with the name %s has already been processed.", fileName));
+            logService.save(log);
+
+            return new ResponseEntity(String.format("File with the name %s has already been processed.", fileName), HttpStatus.BAD_REQUEST);
+        }
+        return null;
+    }
+
+    private Boolean outputFileExists(String fileName)
     {
         String filePathString = env.getProperty("csv.output.path") + fileName;
         File file = new File(filePathString);

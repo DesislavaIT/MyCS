@@ -39,7 +39,7 @@ public class CreditScoreCalculator {
 
     private static int getAccountTypeS(Client client) {
         int accountTypeS;
-        if (client.getAccountType().equals("VL")) {
+        if (client.getAccountType().toString().equals("VL")) {
             accountTypeS = -57;
         }
         else {
